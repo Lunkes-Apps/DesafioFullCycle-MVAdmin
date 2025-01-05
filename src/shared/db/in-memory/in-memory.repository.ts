@@ -1,4 +1,5 @@
 import { Entity } from "../../domain/entity";
+import { NotFoundError } from "../../domain/errors/not-found.error";
 import { IRepository } from "../../domain/repository/repository-interface";
 import { ValueObject } from "../../domain/value-object";
 
@@ -30,9 +31,10 @@ implements IRepository<E, EntittyId>{
             item.get_entity_id().equals(entity_id)
         );
         if (indexFound === -1){
-            throw new Error("Entity not found");
+            throw new NotFoundError(entity_id, this.getEntity())
         }
-        this.items.slice(indexFound);
+        
+        this.items.splice(indexFound, 1);
     }
     
     async findById(entity_id: any): Promise<any> {
