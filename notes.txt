@@ -1,0 +1,7 @@
+npm install typescript -D
+npx tsc --init
+
+npm install jest @types/jest -D
+
+npm install @swc/core @swc/cli @swc/jest -D
+npm install ts-node -D
