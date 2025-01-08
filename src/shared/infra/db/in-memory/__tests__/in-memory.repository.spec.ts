@@ -1,9 +1,9 @@
 import { reject } from "lodash";
-import { Entity } from "../../domain/entity";
-import { NotFoundError } from "../../domain/errors/not-found.error";
-import { ValueObject } from "../../domain/value-object";
-import { Uuid } from "../../domain/value-objects/uuid.vo";
-import { InMemoryRepository } from "./in-memory.repository";
+import { Entity } from "../../../../domain/entity";
+import { NotFoundError } from "../../../../domain/errors/not-found.error";
+import { ValueObject } from "../../../../domain/value-object";
+import { Uuid } from "../../../../domain/value-objects/uuid.vo";
+import { InMemoryRepository } from "../in-memory.repository";
 
 
 type StubEntityConstructor = {
