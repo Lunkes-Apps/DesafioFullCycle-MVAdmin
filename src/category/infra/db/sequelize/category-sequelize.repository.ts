@@ -1,3 +1,4 @@
+import { Op } from "sequelize";
 import { NotFoundError } from "../../../../shared/domain/errors/not-found.error";
 import { Uuid } from "../../../../shared/domain/value-objects/uuid.vo";
 import { Category } from "../../../domain/category.entity";
@@ -7,7 +8,7 @@ import {
   ICategoryRepository,
 } from "../../../domain/category.repository";
 import { CategoryModel } from "./category.model";
-import { Op } from "sequelize";
+import { CategoryModelMapper } from "./category-model-mapper";
 
 export class CategorySequelizeRepository implements ICategoryRepository {
   sortableFields: string[] = ["name", "created_at"];
@@ -15,25 +16,15 @@ export class CategorySequelizeRepository implements ICategoryRepository {
   constructor(private categoryModel: typeof CategoryModel) {}
 
   async insert(entity: Category): Promise<void> {
-    await this.categoryModel.create({
-      category_id: entity.category_id.id,
-      name: entity.name,
-      description: entity.description,
-      is_active: entity.is_active,
-      created_at: entity.created_at,
-    });
+    const modelProps = CategoryModelMapper.toModel(entity);
+    await this.categoryModel.create(modelProps.toJSON());
   }
 
   async bulkInsert(entities: Category[]): Promise<void> {
-    await this.categoryModel.bulkCreate(
-      entities.map((entity) => ({
-        category_id: entity.category_id.id,
-        name: entity.name,
-        description: entity.description,
-        is_active: entity.is_active,
-        created_at: entity.created_at,
-      }))
+    const modelsProps = entities.map((entity) =>
+      CategoryModelMapper.toModel(entity).toJSON()
     );
+    await this.categoryModel.bulkCreate(modelsProps);
   }
 
   async update(entity: Category): Promise<void> {
@@ -42,52 +33,35 @@ export class CategorySequelizeRepository implements ICategoryRepository {
     if (!model) {
       throw new NotFoundError(id, this.getEntity());
     }
-    this.categoryModel.update(
-      {
-        category_id: entity.category_id.id,
-        name: entity.name,
-        description: entity.description,
-        is_active: entity.is_active,
-        created_at: entity.created_at,
-      },
-      { where: { category_id: id } }
-    );
+    const modelProps = CategoryModelMapper.toModel(entity);
+    await this.categoryModel.update(modelProps.toJSON(), {
+      where: { category_id: id },
+    });
   }
 
-  async delete(entity_id: Uuid): Promise<void> {
-    const id = entity_id.id;
+  async delete(category_id: Uuid): Promise<void> {
+    const id = category_id.id;
     const model = await this._get(id);
     if (!model) {
       throw new NotFoundError(id, this.getEntity());
     }
-    this.categoryModel.destroy({ where: { category_id: id } });
+    await this.categoryModel.destroy({ where: { category_id: id } });
   }
 
   async findById(entity_id: Uuid): Promise<Category | null> {
     const model = await this._get(entity_id.id);
-    return new Category({
-      category_id: new Uuid(model.category_id),
-      name: model.name,
-      description: model.description,
-      is_active: model.is_active,
-      created_at: model.created_at,
-    });
+
+    return model ? CategoryModelMapper.toEntity(model) : null;
   }
 
-  private async _get(id: string): Promise<CategoryModel | null> {
+  private async _get(id: string) {
     return await this.categoryModel.findByPk(id);
   }
 
   async findAll(): Promise<Category[]> {
     const models = await this.categoryModel.findAll();
     return models.map((model) => {
-      return new Category({
-        category_id: new Uuid(model.category_id),
-        name: model.name,
-        description: model.description,
-        is_active: model.is_active,
-        created_at: model.created_at,
-      });
+      return CategoryModelMapper.toEntity(model);
     });
   }
 
@@ -106,24 +80,17 @@ export class CategorySequelizeRepository implements ICategoryRepository {
       offset,
       limit,
     });
-    const items = models.map((model) => {
-      return new Category({
-        category_id: new Uuid(model.category_id),
-        name: model.name,
-        description: model.description,
-        is_active: model.is_active,
-        created_at: model.created_at,
-      });
-    });
     return new CategorySearchResult({
-      items: items,
-      total: count,
+      items: models.map((model) => {
+        return CategoryModelMapper.toEntity(model);
+      }),
       current_page: props.page,
       per_page: props.per_page,
+      total: count,
     });
   }
 
-  getEntity(): new (...args: any) => Category {
+  getEntity(): new (...args: any[]) => Category {
     return Category;
   }
 }

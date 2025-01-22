@@ -1,18 +1,10 @@
-import { DataType, Sequelize } from "sequelize-typescript";
+import { DataType } from "sequelize-typescript";
 import { CategoryModel } from "../category.model";
-import { Category } from "../../../../domain/category.entity";
+import { setupSequelize } from "../../../../../shared/infra/testing/helpers";
 
 describe("CategoryModel Unit Test", () => {
-  let sequelize;
-  beforeEach(async () => {
-    sequelize = new Sequelize({
-      dialect: "sqlite",
-      storage: ":memory",
-      models: [CategoryModel],
-      logging: false,
-    });
-    await sequelize.sync({ force: true });
-  });
+  setupSequelize({ models: [CategoryModel] });
+  
 
   it("should create a category", async () => {
     const attributesMap = CategoryModel.getAttributes();
@@ -77,10 +69,11 @@ describe("CategoryModel Unit Test", () => {
       created_at: new Date(),
     };
 
-    //act
-    // const category = await CategoryModel.create(arrange);
+    // act
+    const category = await CategoryModel.create(arrange);
 
-    //assert
-    // expect(category.toJSON()).toStrictEqual(arrange);
+    // assert
+    expect(category.toJSON()).toStrictEqual(arrange);
   });
+
 });

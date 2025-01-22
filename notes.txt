@@ -5,3 +5,7 @@ npm install jest @types/jest -D
 
 npm install @swc/core @swc/cli @swc/jest -D
 npm install ts-node -D
+
+npm install sequelize sequelize-typescript
+npm install --save sqlite3
+npm install @types/sequelize --save-dev
