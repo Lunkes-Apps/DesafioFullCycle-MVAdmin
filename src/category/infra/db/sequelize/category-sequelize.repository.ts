@@ -37,6 +37,7 @@ export class CategorySequelizeRepository implements ICategoryRepository {
     await this.categoryModel.update(modelProps.toJSON(), {
       where: { category_id: id },
     });
+    const a = await this.findById(new Uuid(id));
   }
 
   async delete(category_id: Uuid): Promise<void> {

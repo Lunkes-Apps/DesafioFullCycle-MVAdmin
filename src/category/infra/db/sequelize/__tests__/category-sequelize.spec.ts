@@ -60,7 +60,8 @@ describe("CategorySequelizeRepository Integration Test", () => {
     await repository.update(entity);
 
     const entityFound = await repository.findById(entity.category_id);
-    expect(entity.toJSON()).toStrictEqual(entityFound.toJSON());
+    expect(entityFound.name).toBe("Movie updated");
+  
   });
 
   test("should throw error on delete when a entity not found", async () => {

@@ -29,7 +29,7 @@ export class CategoryInMemoryRepository extends InMemorySearchableRepository<
   }
 
   getEntity(): new (...args: any) => any {
-    throw new Error("Method not implemented.");
+    return Category;
   }
 
   protected applySort(

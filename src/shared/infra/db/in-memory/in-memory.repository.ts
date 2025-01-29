@@ -38,7 +38,7 @@ export abstract class InMemoryRepository<
       item.get_entity_id().equals(entity_id)
     );
     if (indexFound === -1) {
-      throw new NotFoundError(entity_id, this.getEntity());
+      throw new NotFoundError(entity_id.id, this.getEntity());
     }
 
     this.items.splice(indexFound, 1);
