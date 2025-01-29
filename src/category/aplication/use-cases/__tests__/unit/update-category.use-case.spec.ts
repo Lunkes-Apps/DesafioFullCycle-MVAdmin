@@ -27,6 +27,5 @@ describe("Update category use case test", () => {
     expect(spyFindById).toHaveBeenCalledTimes(1);
     expect(newCategory.name).toBe("New Category C");
 
-
   });
 });
