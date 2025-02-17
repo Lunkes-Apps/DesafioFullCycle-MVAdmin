@@ -22,7 +22,7 @@ export class CategoryModelMapper {
       created_at: model.created_at,
       is_active: model.is_active,
     });
-    Category.validate(entity);
+    // Category.validate(entity);
     return entity;
   }
 }
