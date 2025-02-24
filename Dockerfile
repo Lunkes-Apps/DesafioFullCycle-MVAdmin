@@ -1,5 +1,7 @@
 FROM node:20.5.1-slim
 
+RUN npm install -g @nestjs/cli@10.1.17 
+
 RUN useradd -m -u 1001 node2
 USER node2
 

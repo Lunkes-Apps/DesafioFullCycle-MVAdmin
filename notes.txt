@@ -9,3 +9,7 @@ npm install ts-node -D
 npm install sequelize sequelize-typescript
 npm install --save sqlite3
 npm install @types/sequelize --save-dev
+
+npm install -g @nestjs/cli
+
+npm install chance @types/chance --save-de
